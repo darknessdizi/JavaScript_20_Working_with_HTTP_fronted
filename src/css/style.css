@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0 20px;
+  background-color: aquamarine;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.add-form {
+  text-align: right;
+  margin: 20px 0px;
+}
+
+.add-form button {
+  font-size: 16px;
+  padding: 10px 30px;
+  border-radius: 15px;
+  border: 1px solid rgb(78, 78, 78);
+}
+
+.add-form button:hover {
+  background-color: rgb(220, 221, 221);
+}
+
+.conteiner-tasks {
+  background-color: darksalmon;
+  border-top: 1px solid rgb(78, 78, 78);
+}
+
+.task {
+  height: 40px;
+  background-color:khaki;
+  border-left: 1px solid rgb(78, 78, 78);
+  border-right: 1px solid rgb(78, 78, 78);
+  border-bottom: 1px solid rgb(78, 78, 78);
+}
