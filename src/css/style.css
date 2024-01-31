@@ -27,6 +27,8 @@ body {
 
 .conteiner-tasks {
   border-top: 1px solid rgb(78, 78, 78);
+  /* отмена выделения текста */
+  user-select: none; 
 }
 
 .content-task {
@@ -35,6 +37,10 @@ body {
   border-right: 1px solid rgb(78, 78, 78);
   border-bottom: 1px solid rgb(78, 78, 78);
   font-size: 1em;
+}
+
+.content-task:hover {
+  background-color:rgb(230, 215, 82);
 }
 
 .task {
@@ -95,9 +101,14 @@ body {
 .task-name {
   margin-left: 10px;
   flex-grow: 1;
+  word-break: break-word;
 }
 
 .task-created {
   min-width: 20%;
   text-align: center;
+}
+
+.hidden {
+  display: none;
 }

@@ -6,8 +6,9 @@ export default class WindowController {
   }
 
   init() {
-    this.editor.bindListeners();
+    this.editor.init();
     this.editor.addFormListeners(this.onSubmitForm.bind(this));
+    this.editor.addClickTasksListeners(this.onClickTasks.bind(this))
     this.getTasksFromServer();
   }
 
@@ -37,6 +38,39 @@ export default class WindowController {
   }
 
   onSubmitForm() {
+    // Callback - нажали кнопку добавить тикет
     console.log('Нажали кнопку');
+  }
+
+  onClickTasks(event) {
+    // Callback - нажали поле задачи
+    const nameClass = event.target.classList.value;
+    const parent = event.target.closest('.content-task');
+    if (nameClass.includes('task-status')) {
+      event.target.classList.toggle('done');
+      // далее менять статус на сервере
+      return;
+    }
+
+    if (nameClass.includes('task-delete')) {
+      // Удалить задачу
+      console.log('Удалить задачу', parent);
+      parent.remove();
+      // Далее удалить задачу на сервере
+      return;
+    }
+
+
+    if (nameClass.includes('task-edit')) {
+      // Открыть окно редактирования
+      console.log('Открыть окно редактирования');
+      return;
+    }
+
+    const description = parent.querySelector('.task-description');
+    description.classList.toggle('hidden');
+    if (description.textContent === '') {
+      description.textContent = 'Нет данных';
+    }
   }
 }

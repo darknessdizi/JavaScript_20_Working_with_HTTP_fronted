@@ -3,17 +3,20 @@ export default class WindowEdit {
     this.conteiner = conteiner;
     this.conteinerTasks = null;
     this.formListeners = [];
+    this.tasksListeners = [];
   }
 
-  bindListeners() {
+  init() {
     // Добавляем обработчики событий для элементов
     const form = this.conteiner.querySelector('.add-form');
     form.addEventListener('submit', (event) => this.onSubmitForm(event));
 
     this.conteinerTasks = this.conteiner.querySelector('.conteiner-tasks');
+    this.conteinerTasks.addEventListener('click', (event) => this.onClickTasks(event));
   }
 
   addTask(obj) {
+    // Отрисовывает задачу
     const content = WindowEdit.addTagHTML(this.conteinerTasks, 'content-task');
     const task = WindowEdit.addTagHTML(content, 'task');
     const status = WindowEdit.addTagHTML(task, 'task-status');
@@ -29,6 +32,7 @@ export default class WindowEdit {
     const cross = WindowEdit.addTagHTML(blockControll, 'task-delete');
     const description = WindowEdit.addTagHTML(content, 'task-description');
     description.textContent = obj.description;
+    description.classList.add('hidden');
   }
 
   onSubmitForm(event) {
@@ -41,6 +45,16 @@ export default class WindowEdit {
   addFormListeners(callback) {
     // Сохраняет callback отправки формы
     this.formListeners.push(callback);
+  }
+
+  onClickTasks(event) {
+    event.preventDefault();
+    this.tasksListeners.forEach((o) => o.call(null, event));
+  }
+
+  addClickTasksListeners(callback) {
+    // Сохраняет callback нажатия поля задачи
+    this.tasksListeners.push(callback);
   }
 
   static addTagHTML(parent, className = null, type = 'div') {
