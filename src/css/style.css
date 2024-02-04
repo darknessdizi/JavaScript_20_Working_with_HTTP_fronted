@@ -107,6 +107,7 @@ body {
 .task-created {
   min-width: 20%;
   text-align: center;
+  margin-right: 5px;
 }
 
 .hidden {

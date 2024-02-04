@@ -1,8 +1,7 @@
 export default class WindowController {
-  // static cache = null;
-
-  constructor(editor) {
+  constructor(editor, port) {
     this.editor = editor;
+    this.urlServer = `http://localhost:${port}`;
   }
 
   init() {
@@ -12,34 +11,74 @@ export default class WindowController {
     this.getTasksFromServer();
   }
 
+  _addZero(number) {
+    // делает число двухзначным
+    let result = number;
+    if (result < 10) {
+      result = `0${result}`;
+    }
+    return result;
+  }
+
+  getNewFormatDate(timestamp) {
+    // возвращает новый формат даты и времени
+    let start = new Date(timestamp);
+    const year = String(start.getFullYear()).slice(2);
+    const month = this._addZero(start.getMonth());
+    const date = this._addZero(start.getDate());
+    const hours = this._addZero(start.getHours());
+    const minutes = this._addZero(start.getMinutes());
+    const time = `${date}.${month}.${year} ${hours}:${minutes}`
+    return time;
+  }
+
   getTasksFromServer() {
+    // получение всех задач с сервера
     const self = this;
     const xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function() { // событие изменение статуса запроса
-      console.log(xhr.readyState) // readyState определяет состояние запроса 
-        // 0 - объект создан, метод open() еще не вызывался
-        // 1 - метод open() был вызван
-        // 2 - метод send() был вызван, доступны заголовки и статус
-        // 3 - загрузка responseText содержит частичные данные
-        // 4 - операция полностью завершена
       if (xhr.readyState !== 4) return; 
       if (xhr.status >= 200 && xhr.status < 300) { // получен ответ
         const data = JSON.parse(xhr.responseText);
-        for (const obj of data.tasks) {
-          console.log('obj', obj);
+        for (const obj of data) {
+          obj.created = self.getNewFormatDate(obj.created);
           self.editor.addTask(obj);
         }
       }
     };
 
-    xhr.open('GET', 'http://localhost:9090'); // создаем запрос GET на наш сервер
-    xhr.send(); // отправка запроса
+    const method = 'method=allTickets';
+
+    xhr.open('GET', `${this.urlServer}?${method}`);
+    xhr.send();
   }
 
   onSubmitForm() {
     // Callback - нажали кнопку добавить тикет
+    const self = this;
     console.log('Нажали кнопку');
+    const body = {
+      name: 'ира',
+      status: 'true',
+      description: 'ох уж эта ира'
+    }
+    const xhr = new XMLHttpRequest();
+    const method = 'method=createTicket';
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return; 
+      if (xhr.status >= 200 && xhr.status < 300) { // получен ответ
+        const obj = JSON.parse(xhr.responseText);
+        // console.log('obj', obj)
+        obj.created = self.getNewFormatDate(obj.created);
+        self.editor.addTask(obj);
+      }
+    };
+
+    xhr.open('POST', `${this.urlServer}?${method}`);
+    // xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send(JSON.stringify(body));
   }
 
   onClickTasks(event) {
