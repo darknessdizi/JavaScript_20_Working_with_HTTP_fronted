@@ -4,6 +4,8 @@ export default class WindowEdit {
     this.conteinerTasks = null;
     this.formListeners = [];
     this.tasksListeners = [];
+    this.newTaskListeners = [];
+    this.popup = null;
   }
 
   init() {
@@ -18,6 +20,7 @@ export default class WindowEdit {
   addTask(obj) {
     // Отрисовывает задачу
     const content = WindowEdit.addTagHTML(this.conteinerTasks, 'content-task');
+    content.setAttribute('id', obj.id);
     const task = WindowEdit.addTagHTML(content, 'task');
     const status = WindowEdit.addTagHTML(task, 'task-status');
     if (obj.status === 'true') {
@@ -30,13 +33,60 @@ export default class WindowEdit {
     const blockControll = WindowEdit.addTagHTML(task, 'task-controll');
     const edit = WindowEdit.addTagHTML(blockControll, 'task-edit');
     const cross = WindowEdit.addTagHTML(blockControll, 'task-delete');
-    const description = WindowEdit.addTagHTML(content, 'task-description');
-    description.textContent = obj.description;
-    description.classList.add('hidden');
+    // return content;
+  }
+
+  addDescriptionTask(parent, text) {
+    const description = WindowEdit.addTagHTML(parent, 'task-description');
+    if (text) {
+      description.textContent = text;
+    } else {
+      description.textContent = 'Нету данных';
+    }
+    // description.classList.add('hidden');
+  }
+
+  drawPopupNewTask() {
+    // добавляет всплывающее окно новой задачи
+    this.popup = WindowEdit.addTagHTML(this.conteiner, 'background-popup');
+    const form = WindowEdit.addTagHTML(this.popup, 'popup-new-task', 'form');
+    form.setAttribute('novalidate', '');
+
+    const title = WindowEdit.addTagHTML(form, 'popup-title');
+    title.textContent = 'Добавить тикет';
+
+    const description = WindowEdit.addTagHTML(form, 'popup-description');
+    description.textContent = 'Краткое описание';
+
+    const input = WindowEdit.addTagHTML(form, 'popup-description-input', 'input');
+    input.setAttribute('required', '');
+    input.focus();
+
+    const descriptionFull = WindowEdit.addTagHTML(form, 'popup-description-full');
+    descriptionFull.textContent = 'Подробное описание';
+
+    const textArea = WindowEdit.addTagHTML(form, 'popup-description-textarea', 'textarea');
+
+    const divButtons = WindowEdit.addTagHTML(form, 'popup-buttons');
+
+    const btnCancel = WindowEdit.addTagHTML(divButtons, 'popup-button-cancel', 'button');
+    btnCancel.textContent = 'Отмена';
+    btnCancel.type = 'Reset';
+
+    const btn = WindowEdit.addTagHTML(divButtons, 'popup-button-ok', 'button');
+    btn.textContent = 'Ок';
+    btn.type = 'Submit';
+
+    btnCancel.addEventListener('click', () => {
+      this.popup.remove();
+      this.popup = null;
+    });
+
+    btn.addEventListener('click', (event) => this.onAddNewTasks(event));
   }
 
   onSubmitForm(event) {
-    // Событие Submit для формы
+    // Событие Submit для формы 'Добавить тикет'
     event.preventDefault();
     console.log('submit');
     this.formListeners.forEach((o) => o.call(null));
@@ -48,6 +98,7 @@ export default class WindowEdit {
   }
 
   onClickTasks(event) {
+    // Событие нажатия клика на поле задачи
     event.preventDefault();
     this.tasksListeners.forEach((o) => o.call(null, event));
   }
@@ -55,6 +106,20 @@ export default class WindowEdit {
   addClickTasksListeners(callback) {
     // Сохраняет callback нажатия поля задачи
     this.tasksListeners.push(callback);
+  }
+
+  onAddNewTasks(event) {
+    // Событие click для кнопки 'ОК' добавления новой задачи
+    event.preventDefault();
+    const form = event.target.closest('.popup-new-task');
+    if (form.checkValidity()) { // Проверка валидности формы
+      this.newTaskListeners.forEach((o) => o.call(null, event));
+    }
+  }
+
+  addNewTaskListeners(callback) {
+    // Сохраняет callback нажатия поля задачи
+    this.newTaskListeners.push(callback);
   }
 
   static addTagHTML(parent, className = null, type = 'div') {

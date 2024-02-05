@@ -8,6 +8,7 @@ export default class WindowController {
     this.editor.init();
     this.editor.addFormListeners(this.onSubmitForm.bind(this));
     this.editor.addClickTasksListeners(this.onClickTasks.bind(this))
+    this.editor.addNewTaskListeners(this.onAddNewTasks.bind(this))
     this.getTasksFromServer();
   }
 
@@ -56,13 +57,19 @@ export default class WindowController {
 
   onSubmitForm() {
     // Callback - нажали кнопку добавить тикет
+    this.editor.drawPopupNewTask();
+  }
+
+  onAddNewTasks(event) {
+    // Callback - нажали ОК в popup добавления новой задачи
+    const popup = event.target.closest('.popup-new-task');
+    let name = popup.querySelector('.popup-description-input').value;
+    name = `name=${name}`;
+    let description = popup.querySelector('.popup-description-textarea').value;
+    description = `description=${description}`;
+    const body = `${name}&${description}`
+
     const self = this;
-    console.log('Нажали кнопку');
-    const body = {
-      name: 'ира',
-      status: 'true',
-      description: 'ох уж эта ира'
-    }
     const xhr = new XMLHttpRequest();
     const method = 'method=createTicket';
 
@@ -70,21 +77,23 @@ export default class WindowController {
       if (xhr.readyState !== 4) return; 
       if (xhr.status >= 200 && xhr.status < 300) { // получен ответ
         const obj = JSON.parse(xhr.responseText);
-        // console.log('obj', obj)
         obj.created = self.getNewFormatDate(obj.created);
         self.editor.addTask(obj);
+        self.editor.popup.remove();
+        self.editor.popup = null;
       }
     };
 
     xhr.open('POST', `${this.urlServer}?${method}`);
-    // xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send(JSON.stringify(body));
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send(body);
   }
 
   onClickTasks(event) {
     // Callback - нажали поле задачи
     const nameClass = event.target.classList.value;
     const parent = event.target.closest('.content-task');
+    const description = parent.querySelector('.task-description');
     if (nameClass.includes('task-status')) {
       event.target.classList.toggle('done');
       // далее менять статус на сервере
@@ -106,10 +115,25 @@ export default class WindowController {
       return;
     }
 
-    const description = parent.querySelector('.task-description');
-    description.classList.toggle('hidden');
-    if (description.textContent === '') {
-      description.textContent = 'Нет данных';
+    if (description) {
+      description.remove();
+      return;
     }
+
+    const self = this;
+    const xhr = new XMLHttpRequest();
+    const id = parent.getAttribute('id');
+    const method = `method=ticketById&id=${id}`;
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return; 
+      if (xhr.status >= 200 && xhr.status < 300) { // получен ответ
+        const obj = JSON.parse(xhr.responseText);
+        self.editor.addDescriptionTask(parent, obj.description);
+      }
+    };
+
+    xhr.open('GET', `${this.urlServer}?${method}`);
+    xhr.send();
   }
 }

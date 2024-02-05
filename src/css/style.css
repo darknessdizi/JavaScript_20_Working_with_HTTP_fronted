@@ -19,6 +19,7 @@ body {
   padding: 10px 30px;
   border-radius: 15px;
   border: 1px solid rgb(78, 78, 78);
+  cursor: pointer;
 }
 
 .add-form button:hover {
@@ -26,9 +27,12 @@ body {
 }
 
 .conteiner-tasks {
-  border-top: 1px solid rgb(78, 78, 78);
   /* отмена выделения текста */
   user-select: none; 
+}
+
+.conteiner-tasks .content-task:nth-child(1) {
+  border-top: 1px solid rgb(78, 78, 78);
 }
 
 .content-task {
@@ -100,6 +104,7 @@ body {
 
 .task-name {
   margin-left: 10px;
+  margin-right: 10px;
   flex-grow: 1;
   word-break: break-word;
 }
@@ -110,6 +115,69 @@ body {
   margin-right: 5px;
 }
 
-.hidden {
+/* .hidden {
   display: none;
+} */
+
+.background-popup {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-new-task {
+  width: 40%;
+  background-color: white;
+  padding: 10px 10px 0px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+
+.popup-new-task div {
+  margin-bottom: 10px;
+}
+
+.popup-title {
+  text-align: center;
+}
+
+.popup-description-input {
+  margin-bottom: 10px;
+}
+
+.popup-description-textarea {
+  height: 3em;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: end;
+}
+
+.popup-buttons button:nth-child(1) {
+  margin-right: 10px;
+}
+
+.popup-button-cancel,
+.popup-button-ok {
+  /* margin-top: 10px; */
+  padding: 5px 20px;
+  border: 1px solid  black;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.popup-button-cancel:hover,
+.popup-button-ok:hover {
+  background-color: rgb(220, 221, 221);
 }
