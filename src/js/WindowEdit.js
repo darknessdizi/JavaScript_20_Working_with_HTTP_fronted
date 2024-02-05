@@ -33,23 +33,23 @@ export default class WindowEdit {
     const blockControll = WindowEdit.addTagHTML(task, 'task-controll');
     const edit = WindowEdit.addTagHTML(blockControll, 'task-edit');
     const cross = WindowEdit.addTagHTML(blockControll, 'task-delete');
-    // return content;
   }
 
   addDescriptionTask(parent, text) {
+    // отрисовывает полное описание задачи
     const description = WindowEdit.addTagHTML(parent, 'task-description');
+    const pre = WindowEdit.addTagHTML(description, 'task-description-text', 'pre');
     if (text) {
-      description.textContent = text;
+      pre.textContent = text;
     } else {
-      description.textContent = 'Нету данных';
+      pre.textContent = 'Нету данных';
     }
-    // description.classList.add('hidden');
   }
 
   drawPopupNewTask() {
     // добавляет всплывающее окно новой задачи
     this.popup = WindowEdit.addTagHTML(this.conteiner, 'background-popup');
-    const form = WindowEdit.addTagHTML(this.popup, 'popup-new-task', 'form');
+    const form = WindowEdit.addTagHTML(this.popup, 'popup-window', 'form');
     form.setAttribute('novalidate', '');
 
     const title = WindowEdit.addTagHTML(form, 'popup-title');
@@ -83,6 +83,35 @@ export default class WindowEdit {
     });
 
     btn.addEventListener('click', (event) => this.onAddNewTasks(event));
+  }
+
+  drawPopupDeleteTask() {
+    // добавляет всплывающее окно удаления задачи
+    this.popup = WindowEdit.addTagHTML(this.conteiner, 'background-popup');
+    const form = WindowEdit.addTagHTML(this.popup, 'popup-window', 'form');
+
+    const title = WindowEdit.addTagHTML(form, 'popup-title');
+    title.textContent = 'Удалить тикет';
+
+    const description = WindowEdit.addTagHTML(form, 'popup-description');
+    description.textContent = 'Вы уверены, что хотите удалить тикет? Это действие необратимо.';
+
+    const divButtons = WindowEdit.addTagHTML(form, 'popup-buttons');
+
+    const btnCancel = WindowEdit.addTagHTML(divButtons, 'popup-button-cancel', 'button');
+    btnCancel.textContent = 'Отмена';
+    btnCancel.type = 'Reset';
+
+    const btn = WindowEdit.addTagHTML(divButtons, 'popup-button-ok', 'button');
+    btn.textContent = 'Ок';
+    btn.type = 'Submit';
+
+    btnCancel.addEventListener('click', () => {
+      this.popup.remove();
+      this.popup = null;
+    });
+
+    btn.addEventListener('click', (event) => this.onAddNewTasks(event)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
   onSubmitForm(event) {

@@ -94,20 +94,27 @@ export default class WindowController {
     const nameClass = event.target.classList.value;
     const parent = event.target.closest('.content-task');
     const description = parent.querySelector('.task-description');
+    const self = this;
+    const xhr = new XMLHttpRequest();
+    const id = parent.getAttribute('id');
+    let method = `method=ticketById&id=${id}`;
+
     if (nameClass.includes('task-status')) {
+      // изменить статус задачи
       event.target.classList.toggle('done');
-      // далее менять статус на сервере
-      return;
+      if (event.target.classList.value.includes('done')) {
+        method = `method=changeStatus&id=${id}&status=true`;
+      } else {
+        method = `method=changeStatus&id=${id}&status=false`;
+      }
     }
 
     if (nameClass.includes('task-delete')) {
       // Удалить задачу
-      console.log('Удалить задачу', parent);
-      parent.remove();
-      // Далее удалить задачу на сервере
-      return;
+      this.editor.drawPopupDeleteTask();
+      // parent.remove();
+      // method = `method=deleteTicket&id=${id}`;
     }
-
 
     if (nameClass.includes('task-edit')) {
       // Открыть окно редактирования
@@ -115,19 +122,15 @@ export default class WindowController {
       return;
     }
 
-    if (description) {
-      description.remove();
-      return;
-    }
-
-    const self = this;
-    const xhr = new XMLHttpRequest();
-    const id = parent.getAttribute('id');
-    const method = `method=ticketById&id=${id}`;
-
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) return; 
       if (xhr.status >= 200 && xhr.status < 300) { // получен ответ
+        if (xhr.responseText === 'Ok') return;
+        if (description) {
+          description.remove(); // удаляет описание задачи
+          // description.classList.toggle('hidden'); // скрывает описание задачи
+          return;
+        }
         const obj = JSON.parse(xhr.responseText);
         self.editor.addDescriptionTask(parent, obj.description);
       }

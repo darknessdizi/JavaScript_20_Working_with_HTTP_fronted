@@ -102,6 +102,14 @@ body {
   margin: 5px 35px 15px;
 }
 
+.task-description-text {
+  word-break: break-word;
+  /* убирает полосу прокрутки в теге pre */
+  white-space: pre-wrap;
+  font-family: inherit;
+  margin: 0;
+}
+
 .task-name {
   margin-left: 10px;
   margin-right: 10px;
@@ -115,9 +123,9 @@ body {
   margin-right: 5px;
 }
 
-/* .hidden {
+.hidden {
   display: none;
-} */
+}
 
 .background-popup {
   position: absolute;
@@ -131,7 +139,7 @@ body {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.popup-new-task {
+.popup-window {
   width: 40%;
   background-color: white;
   padding: 10px 10px 0px;
@@ -141,7 +149,7 @@ body {
   border: 1px solid black;
 }
 
-.popup-new-task div {
+.popup-window div {
   margin-bottom: 10px;
 }
 
