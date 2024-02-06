@@ -5,6 +5,7 @@ export default class WindowEdit {
     this.formListeners = [];
     this.tasksListeners = [];
     this.newTaskListeners = [];
+    this.deleteTaskListeners = [];
     this.popup = null;
   }
 
@@ -85,7 +86,7 @@ export default class WindowEdit {
     btn.addEventListener('click', (event) => this.onAddNewTasks(event));
   }
 
-  drawPopupDeleteTask() {
+  drawPopupDeleteTask(id) {
     // добавляет всплывающее окно удаления задачи
     this.popup = WindowEdit.addTagHTML(this.conteiner, 'background-popup');
     const form = WindowEdit.addTagHTML(this.popup, 'popup-window', 'form');
@@ -111,7 +112,7 @@ export default class WindowEdit {
       this.popup = null;
     });
 
-    btn.addEventListener('click', (event) => this.onAddNewTasks(event)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    btn.addEventListener('click', (event) => this.onDeleteTasks(event, id));
   }
 
   onSubmitForm(event) {
@@ -140,7 +141,7 @@ export default class WindowEdit {
   onAddNewTasks(event) {
     // Событие click для кнопки 'ОК' добавления новой задачи
     event.preventDefault();
-    const form = event.target.closest('.popup-new-task');
+    const form = event.target.closest('.popup-window');
     if (form.checkValidity()) { // Проверка валидности формы
       this.newTaskListeners.forEach((o) => o.call(null, event));
     }
@@ -149,6 +150,17 @@ export default class WindowEdit {
   addNewTaskListeners(callback) {
     // Сохраняет callback нажатия поля задачи
     this.newTaskListeners.push(callback);
+  }
+
+  onDeleteTasks(event, id) {
+    // Событие click для кнопки 'ОК' удаления задачи
+    event.preventDefault();
+    this.deleteTaskListeners.forEach((o) => o.call(null, event, id));
+  }
+
+  addDeleteTaskListeners(callback) {
+    // Сохраняет callback нажатия поля крестик для удаления задачи
+    this.deleteTaskListeners.push(callback);
   }
 
   static addTagHTML(parent, className = null, type = 'div') {

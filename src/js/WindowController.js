@@ -7,8 +7,9 @@ export default class WindowController {
   init() {
     this.editor.init();
     this.editor.addFormListeners(this.onSubmitForm.bind(this));
-    this.editor.addClickTasksListeners(this.onClickTasks.bind(this))
-    this.editor.addNewTaskListeners(this.onAddNewTasks.bind(this))
+    this.editor.addClickTasksListeners(this.onClickTasks.bind(this));
+    this.editor.addNewTaskListeners(this.onAddNewTasks.bind(this));
+    this.editor.addDeleteTaskListeners(this.onDeleteTasks.bind(this));
     this.getTasksFromServer();
   }
 
@@ -62,7 +63,7 @@ export default class WindowController {
 
   onAddNewTasks(event) {
     // Callback - нажали ОК в popup добавления новой задачи
-    const popup = event.target.closest('.popup-new-task');
+    const popup = event.target.closest('.popup-window');
     let name = popup.querySelector('.popup-description-input').value;
     name = `name=${name}`;
     let description = popup.querySelector('.popup-description-textarea').value;
@@ -111,7 +112,8 @@ export default class WindowController {
 
     if (nameClass.includes('task-delete')) {
       // Удалить задачу
-      this.editor.drawPopupDeleteTask();
+      this.editor.drawPopupDeleteTask(id);
+      return;
       // parent.remove();
       // method = `method=deleteTicket&id=${id}`;
     }
@@ -138,5 +140,15 @@ export default class WindowController {
 
     xhr.open('GET', `${this.urlServer}?${method}`);
     xhr.send();
+  }
+
+  onDeleteTasks(event, id) {
+    console.log('target', id);
+    const parent = document.getElementById(id);
+    console.log('parent', parent);
+    parent.remove();
+    this.editor.popup.remove();
+    this.editor.popup = null;
+    // method = `method=deleteTicket&id=${id}`;
   }
 }
