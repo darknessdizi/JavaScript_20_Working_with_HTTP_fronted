@@ -6,6 +6,7 @@ export default class WindowEdit {
     this.tasksListeners = [];
     this.newTaskListeners = [];
     this.deleteTaskListeners = [];
+    this.editTaskListeners = [];
     this.popup = null;
   }
 
@@ -47,7 +48,19 @@ export default class WindowEdit {
     }
   }
 
-  drawPopupNewTask() {
+  createPopupNewTask() {
+    // добавляет всплывающее окно новой задачи
+    const btn = this.drawPopup();
+    btn.addEventListener('click', (event) => this.onAddNewTasks(event));
+  }
+
+  createPopupEditTask() {
+    // добавляет всплывающее окно для редактирования задачи
+    const btn = this.drawPopup();
+    btn.addEventListener('click', (event) => this.onEditTasks(event));
+  }
+
+  drawPopup() {
     // добавляет всплывающее окно новой задачи
     this.popup = WindowEdit.addTagHTML(this.conteiner, 'background-popup');
     const form = WindowEdit.addTagHTML(this.popup, 'popup-window', 'form');
@@ -82,8 +95,7 @@ export default class WindowEdit {
       this.popup.remove();
       this.popup = null;
     });
-
-    btn.addEventListener('click', (event) => this.onAddNewTasks(event));
+    return btn;
   }
 
   drawPopupDeleteTask(id) {
@@ -150,6 +162,19 @@ export default class WindowEdit {
   addNewTaskListeners(callback) {
     // Сохраняет callback нажатия поля задачи
     this.newTaskListeners.push(callback);
+  }
+
+  onEditTasks(event) {
+    event.preventDefault();
+    const form = event.target.closest('.popup-window');
+    if (form.checkValidity()) { // Проверка валидности формы
+      this.editTaskListeners.forEach((o) => o.call(null, event));
+    }
+  }
+
+  addEditTaskListeners(callback) {
+    // Сохраняет callback нажатия поля задачи
+    this.editTaskListeners.push(callback);
   }
 
   onDeleteTasks(event, id) {
