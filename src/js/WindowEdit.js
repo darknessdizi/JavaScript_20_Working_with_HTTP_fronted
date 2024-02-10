@@ -33,11 +33,11 @@ export default class WindowEdit {
     const created = WindowEdit.addTagHTML(task, 'task-created');
     created.textContent = obj.created;
     const blockControll = WindowEdit.addTagHTML(task, 'task-controll');
-    const edit = WindowEdit.addTagHTML(blockControll, 'task-edit');
-    const cross = WindowEdit.addTagHTML(blockControll, 'task-delete');
+    WindowEdit.addTagHTML(blockControll, 'task-edit');
+    WindowEdit.addTagHTML(blockControll, 'task-delete');
   }
 
-  addDescriptionTask(parent, text) {
+  static addDescriptionTask(parent, text) {
     // отрисовывает полное описание задачи
     const description = WindowEdit.addTagHTML(parent, 'task-description');
     const pre = WindowEdit.addTagHTML(description, 'task-description-text', 'pre');
@@ -79,7 +79,7 @@ export default class WindowEdit {
     const descriptionFull = WindowEdit.addTagHTML(form, 'popup-description-full');
     descriptionFull.textContent = 'Подробное описание';
 
-    const textArea = WindowEdit.addTagHTML(form, 'popup-description-textarea', 'textarea');
+    WindowEdit.addTagHTML(form, 'popup-description-textarea', 'textarea');
 
     const divButtons = WindowEdit.addTagHTML(form, 'popup-buttons');
 
